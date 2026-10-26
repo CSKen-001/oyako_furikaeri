@@ -1,0 +1,25 @@
+{
+  "name": "親子の穏やかな時間 — 今日のふりかえり",
+  "short_name": "親子のふりかえり",
+  "description": "子供と穏やかに過ごすための、毎日の小さなふりかえり",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f4",
+  "theme_color": "#326a57",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

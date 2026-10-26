@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#326a57"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon-192.png" sizes="192x192"><link rel="apple-touch-icon" href="./icon-192.png">
+<title>親子の穏やかな時間｜今日のふりかえり</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;color-scheme:light;--bg:#f6f7f4;--ink:#27352f;--muted:#647268;--accent:#326a57;--line:#dbe4dc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}main{max-width:700px;margin:auto;padding:25px 16px 55px}h1{font-size:1.65rem;margin:8px 0}h2{font-size:1.15rem;margin:0 0 15px}p{line-height:1.65}small,.muted{color:var(--muted)}.card{background:white;border:1px solid var(--line);border-radius:17px;padding:21px;margin:18px 0;box-shadow:0 3px 16px #243f2910}.datebar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.datebar input{font:inherit;padding:9px;border-radius:9px;border:1px solid var(--line)}.item{display:flex;gap:13px;align-items:flex-start;padding:15px 0;border-top:1px solid var(--line);cursor:pointer;line-height:1.6}.item:first-of-type{border-top:none}.item input{width:24px;height:24px;accent-color:var(--accent);flex-shrink:0}textarea{width:100%;min-height:96px;padding:12px;font:inherit;border-radius:10px;border:1px solid #bccdc1;resize:vertical}button{font:inherit;border-radius:10px;border:1px solid #cbd8cc;background:white;color:var(--ink);padding:11px 15px;cursor:pointer}button.primary{background:var(--accent);color:white;border-color:var(--accent);font-weight:650}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #95c7af;outline-offset:2px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.success{color:var(--accent);font-weight:600;min-height:1.5em}.history{list-style:none;padding:0;margin:0}.history li{padding:12px 0;border-top:1px solid var(--line)}.history button{text-align:left;width:100%;border:0;padding:5px;background:transparent}.history strong{display:block}.history .note{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);font-size:.92rem}.empty{color:var(--muted)}.quiet{background:#eef4ee;border-radius:12px;padding:13px}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.count{font-size:.94rem;color:var(--muted)}footer{font-size:.85rem;color:var(--muted)}@media(max-width:500px){h1{font-size:1.45rem}.card{padding:16px}}
+</style></head>
+<body><main>
+<header><small>家族と過ごす毎日を、少し穏やかに</small><h1>今日のふりかえり</h1><p class="muted">できない日があっても大丈夫。点数ではなく、小さな気づきを残すための記録です。</p></header>
+<section class="card" aria-labelledby="today"><div class="datebar"><h2 id="today">今日のチェック</h2><label>日付 <input type="date" id="date"></label></div>
+<label class="item"><input type="checkbox" class="check"><span>子供が嫌がる勉強の話を、できるだけしなかった</span></label>
+<label class="item"><input type="checkbox" class="check"><span>勉強以外の楽しい話や、何気ない会話をした</span></label>
+<label class="item"><input type="checkbox" class="check"><span>イライラしても、子供に感情をぶつけずに対応した</span></label>
+<label for="memo"><strong>今日のひとこと</strong> <small>（空欄でも大丈夫）</small></label><textarea id="memo" placeholder="一緒に笑ったこと、明日はこうしたいことなど"></textarea>
+<div class="actions"><button type="button" class="primary" id="save">この日の記録を保存</button><button type="button" id="clear">入力を元に戻す</button></div><p class="success" id="status" role="status" aria-live="polite"></p>
+</section>
+<section class="card"><div class="row"><h2>これまでの記録</h2><span id="total" class="count"></span></div><ul id="history" class="history"></ul><div class="actions"><button type="button" id="export">記録をCSVで保存</button><button type="button" id="delete">選択中の日付の記録を削除</button></div></section>
+<p class="quiet">今日うまくいかなかったとしても、明日また穏やかに話せればそれで十分です。</p>
+<footer>記録はこのブラウザの端末内だけに保存され、外部へ送信されません。ブラウザのデータを削除すると記録も消えるため、必要に応じてCSVで保存してください。</footer>
+</main><script>
+(()=>{'use strict';const KEY='oyako-reflection-v1',date=document.getElementById('date'),checks=[...document.querySelectorAll('.check')],memo=document.getElementById('memo'),status=document.getElementById('status');let records={};try{records=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){status.textContent='保存済み記録の読み込みに失敗しました。'}
+function localToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function load(){const r=records[date.value];checks.forEach((c,i)=>c.checked=!!(r&&r.checks[i]));memo.value=r?.memo||'';status.textContent=''}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(records));return true}catch(e){status.textContent='保存できませんでした。ブラウザの保存設定や空き容量をご確認ください。';return false}}
+function render(){const keys=Object.keys(records).sort().reverse(),ul=document.getElementById('history');ul.replaceChildren();document.getElementById('total').textContent=`${keys.length}日分`;if(!keys.length){const li=document.createElement('li');li.className='empty';li.textContent='まだ記録はありません。';ul.append(li);return}keys.forEach(k=>{const r=records[k],li=document.createElement('li'),b=document.createElement('button'),strong=document.createElement('strong');b.type='button';strong.textContent=`${k}　${r.checks.filter(Boolean).length}/3 項目`;b.append(strong);if(r.memo){const note=document.createElement('span');note.className='note';note.textContent=r.memo;b.append(note)}b.addEventListener('click',()=>{date.value=k;load();window.scrollTo({top:0,behavior:'smooth'})});li.append(b);ul.append(li)})}
+date.value=localToday();date.addEventListener('change',load);document.getElementById('save').addEventListener('click',()=>{if(!date.value){status.textContent='日付を選んでください。';return}records[date.value]={checks:checks.map(c=>c.checked),memo:memo.value.trim()};if(persist()){status.textContent='保存しました。今日もお疲れさまでした。';render()}});document.getElementById('clear').addEventListener('click',load);
+document.getElementById('delete').addEventListener('click',()=>{if(!records[date.value]){status.textContent='この日付には保存済みの記録がありません。';return}if(confirm(`${date.value} の記録を削除しますか？`)){delete records[date.value];if(persist()){load();status.textContent='記録を削除しました。';render()}}});
+document.getElementById('export').addEventListener('click',()=>{const q=x=>'"'+String(x??'').replaceAll('"','""')+'"';const lines=[['日付','勉強を言いすぎなかった','楽しい会話','感情をぶつけなかった','メモ'],...Object.keys(records).sort().map(k=>[k,...records[k].checks.map(v=>v?'はい':'いいえ'),records[k].memo])];const csv='\ufeff'+lines.map(r=>r.map(q).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='親子のふりかえり.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});load();render()})();
+</script><script>
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script></body></html>
